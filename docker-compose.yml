@@ -19,6 +19,5 @@ services:
     volumes:
       - /home/node/app/node_modules
       - /home/luisruivo/frontend:/home/node/app
-    command: ["npm", "run", "test"]
+    command: ["npm", "test"]
 
-    
