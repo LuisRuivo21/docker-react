@@ -1,4 +1,4 @@
-name: deploy-frontend
+name: Deploy-frontend-project
 
 on:
   push:
@@ -9,10 +9,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker build -t luisruivo/react-test -f Dockerfile.dev .
-      - run: docker run -e CI=true luisruivo/react-test npm test
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        
+      - name: Build Docker Image
+        run: docker build -t luisruivo/react-test -f Dockerfile.dev .
+        
+      - name: Run tests
+        run: docker run -e CI=true luisruivo/react-test npm test
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
@@ -24,8 +32,8 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: docker-react
           environment_name: Docker-react-env
-          existing_bucket_name: elasticbeanstalk-us-east-1-344615752961
-          region: us-east-1
           version_label: 12345
+          region: us-east-1
+          deployment_package: deploy.zip
+          # existing_bucket_name: elasticbeanstalk-us-east-1-344615752961
           # version_label: ${{ github.sha }}
-          # deployment_package: deploy.zip
