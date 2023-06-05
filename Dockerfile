@@ -22,6 +22,9 @@ RUN npm run build
 # 2. RUN PHASE
 FROM nginx
 
+# Expose port 80
+EXPOSE 80
+
 # Copy 'build' folder from the Build Phase to the Nginx container - this will start automatically Nginx
 COPY --from=builder /app/build /usr/share/nginx/html
 
